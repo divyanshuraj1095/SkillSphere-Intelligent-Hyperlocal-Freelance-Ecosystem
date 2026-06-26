@@ -10,7 +10,9 @@ const freelancerSchema = new mongoose.Schema({
     email : {
         type : String,
         unique : true,
-        required : true
+        required : true,
+        lower : true,
+        trim : true
     },
     password : {
         type : String,
