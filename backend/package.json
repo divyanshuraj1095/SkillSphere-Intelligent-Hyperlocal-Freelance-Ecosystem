@@ -1,0 +1,30 @@
+{
+  "name": "skillsphere",
+  "version": "1.0.0",
+  "description": "....",
+  "homepage": "https://github.com/divyanshuraj1095/SkillSphere-Intelligent-Hyperlocal-Freelance-Ecosystem#readme",
+  "bugs": {
+    "url": "https://github.com/divyanshuraj1095/SkillSphere-Intelligent-Hyperlocal-Freelance-Ecosystem/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/divyanshuraj1095/SkillSphere-Intelligent-Hyperlocal-Freelance-Ecosystem.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "nodemon": "^3.1.14",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}
