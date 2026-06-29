@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import mongoose, { Schema, Document } from "mongoose";
 
-import { Document, Schema } from "mongoose";
+
 
 export interface IUser extends Document{
     name : String,
@@ -33,4 +33,6 @@ const userSchema = new Schema<IUser>({
 
 },{timestamps :true})
 
-module.exports = new mongoose.Model('User', userSchema);
+const User =  mongoose.model<IUser>('User', userSchema);
+
+export default User;
