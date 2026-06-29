@@ -1,6 +1,12 @@
-const jwt = require('jsonwebtoken');
+import jwt from "jsonwebtoken"
 import express, { Request, Response, NextFunction } from "express";
 const User = require('./models/user.ts')
+
+export interface JwtPayload {
+    _id : String,
+    role : "client" | "admin" | "freelancer"
+}
+
 
 const authUser = async(req : Request, res : Response, next: NextFunction)=>{
     try{
@@ -10,9 +16,9 @@ const authUser = async(req : Request, res : Response, next: NextFunction)=>{
           throw new Error("INVALID!!");
         }
 
-        const verify = await jwt.verify(token, process.env.JWT_TOKEN as string);
+        const verify = await jwt.verify(token, process.env.JWT_TOKEN as string) as JwtPayload;
 
-        const {_id} = verify;
+        const {_id} : any = verify;
         const user = await User.findOne({_id});
 
         if(!user){

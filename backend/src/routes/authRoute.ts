@@ -17,7 +17,8 @@ authRouter.post('/signup', async(req : Request, res : Response)=>{
         const user = new User({
             name : name,
             email : email,
-            password : hashedPass
+            password : hashedPass,
+            role
         });
 
         await user.save();
@@ -47,7 +48,7 @@ authRouter.post('/login', async(req : Request, res : Response)=>{
            throw new Error('Invalid credentials');
         }
 
-        const token = jwt.sign({_id : user._id}, process.env.JWT_TOKEN as string, {expiresIn : "5d"});
+        const token = jwt.sign({_id : user._id, role : user.role}, process.env.JWT_TOKEN as string, {expiresIn : "5d"});
 
         res.cookie("token", token);
 

@@ -1,8 +1,15 @@
-import { timeStamp } from "node:console";
-
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+import { Document, Schema } from "mongoose";
+
+export interface IUser extends Document{
+    name : String,
+    email : String,
+    password : String,
+    role : "client" | "freelancer" | "admin";
+}
+
+const userSchema = new Schema<IUser>({
     name : {
         type : String,
         required : true
@@ -24,6 +31,6 @@ const userSchema = new mongoose.Schema({
         default : "client"
     }
 
-},{timeStamp:true})
+},{timestamps :true})
 
 module.exports = new mongoose.Model('User', userSchema);
