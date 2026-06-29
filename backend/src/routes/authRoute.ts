@@ -42,12 +42,12 @@ authRouter.post('/login', async(req : Request, res : Response)=>{
         if(!user){
            throw new Error("User not found");
         }
-        const valid = bcrypt.compare(password)
+        const valid = await bcrypt.compare(password, user.hashedPass);
         if(!valid){
            throw new Error('Invalid credentials');
         }
 
-        const token = jwt.sign({email}, process.env.JWT_TOKEN as string, {expiresIn : "5d"});
+        const token = jwt.sign({_id : user._id}, process.env.JWT_TOKEN as string, {expiresIn : "5d"});
 
         res.cookie("token", token);
 
