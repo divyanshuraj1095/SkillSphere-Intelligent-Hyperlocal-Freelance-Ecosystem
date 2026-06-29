@@ -1,20 +1,20 @@
 import express, { Request, Response } from "express";
 const authRouter = express.Router();
-const Freelancer = require('./models/freelancer.ts')
+const User = require('./models/user.ts')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 authRouter.post('/signup', async(req : Request, res : Response)=>{
     try{
-        const {name, email, password} = req.body
+        const {name, email, password, role} = req.body
 
-        if(!name || !email || !password){
+        if(!name || !email || !password || !role){
            throw new Error("All Fields Required");
         }
 
         const hashedPass = await bcrypt.hash(password, 10);
     
-        const user = new Freelancer({
+        const user = new User({
             name : name,
             email : email,
             password : hashedPass
@@ -38,7 +38,7 @@ authRouter.post('/login', async(req : Request, res : Response)=>{
         if(!email || !password){
            throw new Error("All fields are required!");
         }
-        const user = await Freelancer.findOne({email : email});
+        const user = await User.findOne({email : email});
         if(!user){
            throw new Error("User not found");
         }

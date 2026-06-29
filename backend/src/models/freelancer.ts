@@ -22,7 +22,8 @@ const freelancerSchema = new mongoose.Schema({
         type : [String]
     },
     picture : {
-        type : String
+        type : String,
+        default: ""
     },
     skillsProficiency : {
         type : Number,
@@ -34,6 +35,14 @@ const freelancerSchema = new mongoose.Schema({
         min : 18
     },
     gender : {
+        type : String,
+        required : true
+    },
+    linkedIn : {
+        type : String,
+        required : true
+    },
+    gitHub : {
         type : String,
         required : true
     }
