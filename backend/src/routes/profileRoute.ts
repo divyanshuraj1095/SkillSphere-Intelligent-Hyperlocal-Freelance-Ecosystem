@@ -1,7 +1,7 @@
-const User = require("./models/user")
+import User from "../models/User"
 import express,{Request, Response} from "express"
 const profileRouter = express.Router();
-const authUser = require("./middlewares/auth.middlewares")
+import { authUser } from "../middlewares/auth.middlewares";
 
 profileRouter.get("/getProfile", authUser,  async(req : Request, res :Response)=>{
     try{
