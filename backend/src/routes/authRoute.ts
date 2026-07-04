@@ -69,3 +69,5 @@ authRouter.post('/logout', async(req : Request, res : Response)=>{
         message : "Logout Successful"
     })
 });
+
+export default authRouter

@@ -11,3 +11,5 @@ const authorize = (...roles : string[])=>{
         next();
     }
 }
+
+export default authorize;

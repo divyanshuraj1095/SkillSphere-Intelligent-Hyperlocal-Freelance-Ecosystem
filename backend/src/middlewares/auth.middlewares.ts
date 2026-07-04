@@ -8,7 +8,7 @@ export interface JwtPayload {
 }
 
 
-export const authUser = async(req : Request, res : Response, next: NextFunction)=>{
+const authUser = async(req : Request, res : Response, next: NextFunction)=>{
     try{
         const {token} = req.cookies;
 
@@ -33,3 +33,5 @@ export const authUser = async(req : Request, res : Response, next: NextFunction)
         })
     }
 }
+
+export default authUser;

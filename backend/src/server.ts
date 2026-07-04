@@ -1,8 +1,10 @@
-const express = require('express')
-const connectDB = require('./config/db.ts');
-const dotenv = require('dotenv');
-const authRouter = require('./routes/authRoute.ts')
-const authUser = require("./middlewares/auth.middlewares")
+import express from 'express';
+import connectDB from './config/db';
+import dotenv from 'dotenv'
+import authRouter from "./routes/authRoute";
+import authUser from "./middlewares/auth.middlewares";
+import authorize from "./middlewares/roleAuthorize.middlewares"
+import projectRouter from "./routes/projectRoute";
 
 const app = express();
 dotenv.config()
@@ -12,6 +14,7 @@ app.use('/', async (req : any, res : any)=>{
 })
 
 app.use('/', authUser, authRouter);
+app.use('/', authUser, authorize("client"), projectRouter);
 
 
 connectDB()

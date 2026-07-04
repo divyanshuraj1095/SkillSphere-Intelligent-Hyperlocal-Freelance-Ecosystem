@@ -4,9 +4,10 @@ import Project from "../models/Project";
 
 projectRouter.post("/create", async(req : Request, res : Response)=>{
     try{
-        const {title, description, budget, duration, client, status} = req.body;
+        const {title, description, budget, duration, status} = req.body;
+        const client = req.user._id;
 
-        if(!title || !description || !budget || !duration || !client || !status){
+        if(!title || !description || !budget || !duration || !status){
             throw new Error("All fields are required!!");
         }
 
@@ -75,3 +76,5 @@ projectRouter.get("/get/:id", async(req : Request, res : Response)=>{
         });
     }
 });
+
+export default projectRouter;
