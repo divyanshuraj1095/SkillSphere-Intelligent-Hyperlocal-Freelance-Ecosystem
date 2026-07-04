@@ -2,10 +2,11 @@ import express, {Request, Response} from 'express';
 const proposalRouter = express.Router();
 import Proposal from '../models/proposal';
 import authorize from '../middlewares/roleAuthorize.middlewares';
+import Project from '../models/Project';
 
 proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request, res:Response)=>{
     try{
-        const {projectId, price, deliveryDays, coverLetter} = req.body;
+        const {projectId, price, deliveryDays, coverLetter, status} = req.body;
         const freelancerId = req.user._id
         if(!projectId || !price || !deliveryDays || !coverLetter){
             throw new Error("Field missing!!");
@@ -25,7 +26,8 @@ proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request,
             freelancerId,
             price,
             deliveryDays,
-            coverLetter
+            coverLetter,
+            status
         });
 
         res.json({
@@ -75,6 +77,27 @@ proposalRouter.get('/getProposals/:id', authorize("client"), async(req:Request, 
             message:"Error: "+err
         });
     }
-})
+});
+
+proposalRouter.post('/acceptProposal/:proposalId/accept', authorize("client"), async(req:Request, res:Response)=>{
+    try{
+        const loggedUser = req.user;
+        const id = req.params
+
+        const status = "accepted";
+        const isRequestExist = await Proposal.findOne({
+         proposalId : id
+        });
+        
+        if(!isRequestExist){
+            throw new Error("No request exist");
+        }
+    }
+    catch(err){
+        res.json({
+            message : "Error: "+err
+        })
+    }
+});
 
 export default proposalRouter;

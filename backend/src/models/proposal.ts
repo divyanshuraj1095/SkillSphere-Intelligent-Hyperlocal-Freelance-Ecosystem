@@ -8,7 +8,7 @@ export interface IProposal extends Document{
     price : Number,
     deliveryDays : Number,
     coverLetter : String,
-    status : String
+    status : "pending" | "accepted" | "rejected" | "interested"
 }
 
 const proposalSchema = new Schema<IProposal>({
@@ -37,7 +37,7 @@ const proposalSchema = new Schema<IProposal>({
     },
     status : {
         type : String,
-        enum : ["pending", "accepted", "rejected"],
+        enum : ["pending", "accepted", "rejected", "interested"],
         default : "pending"
 
     }
