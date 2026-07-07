@@ -79,7 +79,7 @@ proposalRouter.get('/getProposals/:id', authorize("client"), async(req:Request, 
     }
 });
 
-proposalRouter.post('/proposal/:proposalId/accept', authorize("client"), async(req:Request, res:Response)=>{
+proposalRouter.patch('/proposal/:proposalId/accept', authorize("client"), async(req:Request, res:Response)=>{
     try{
         const loggedUser = req.user;
         const {proposalId} = req.params
@@ -122,7 +122,7 @@ proposalRouter.post('/proposal/:proposalId/accept', authorize("client"), async(r
     }
 });
 
-proposalRouter.post('/proposal/:proposalId/reject', authorize("client"), async(req : Request, res: Response)=>{
+proposalRouter.patch('/proposal/:proposalId/reject', authorize("client"), async(req : Request, res: Response)=>{
     try{
        const {proposalId} = req.params;
 
@@ -154,7 +154,7 @@ proposalRouter.post('/proposal/:proposalId/reject', authorize("client"), async(r
     }
 });
 
-proposalRouter.post('/proposal/:proposalId/update', authorize("freelancer"), async(req : Request, res : Response)=>{
+proposalRouter.patch('/proposal/:proposalId/update', authorize("freelancer"), async(req : Request, res : Response)=>{
     try{
         const {price, deliveryDays, coverLetter} = req.body;
         const {proposalId} = req.params
