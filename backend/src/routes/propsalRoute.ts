@@ -1,6 +1,6 @@
 import express, {Request, Response} from 'express';
 const proposalRouter = express.Router();
-import Proposal from '../models/proposal';
+import Proposal from '../models/Proposal';
 import authorize from '../middlewares/roleAuthorize.middlewares';
 import Project from '../models/Project';
 
@@ -79,19 +79,33 @@ proposalRouter.get('/getProposals/:id', authorize("client"), async(req:Request, 
     }
 });
 
-proposalRouter.post('/acceptProposal/:proposalId/accept', authorize("client"), async(req:Request, res:Response)=>{
+proposalRouter.post('/proposal/:proposalId/accept', authorize("client"), async(req:Request, res:Response)=>{
     try{
         const loggedUser = req.user;
-        const id = req.params
+        const {proposalId} = req.params
 
         const status = "accepted";
-        const isRequestExist = await Proposal.findOne({
-         proposalId : id
+        const proposal = await Proposal.findById({
+         _id : proposalId
         });
         
-        if(!isRequestExist){
+        if(!proposal){
             throw new Error("No request exist");
         }
+        const project = await Project.findById(proposal.projectId);
+        if(!project){
+            throw new Error("project not found!!");
+        }
+        if(project.client.toString() != req.user._id.toString()){
+            res.status(403).send("User Invalid");
+        }
+
+        proposal.status = status;
+        await proposal.save();
+
+        res.json({
+            message : "proposal accepted successfully!!";
+        })
     }
     catch(err){
         res.json({
@@ -99,5 +113,14 @@ proposalRouter.post('/acceptProposal/:proposalId/accept', authorize("client"), a
         })
     }
 });
+
+proposalRouter.post('/proposal/:proposalId/reject', authorize("client"), async(req : Request, res: Response)=>{
+    try{
+
+    }
+    catch(err){
+        
+    }
+})
 
 export default proposalRouter;
