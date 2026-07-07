@@ -5,6 +5,7 @@ import authRouter from "./routes/authRoute";
 import authUser from "./middlewares/auth.middlewares";
 import authorize from "./middlewares/roleAuthorize.middlewares"
 import projectRouter from "./routes/projectRoute";
+import proposalRouter from './routes/propsalRoute';
 
 const app = express();
 dotenv.config()
@@ -15,6 +16,7 @@ app.use('/', async (req : any, res : any)=>{
 
 app.use('/', authUser, authRouter);
 app.use('/', authUser, authorize("client"), projectRouter);
+app.use('/', authUser, proposalRouter);
 
 
 connectDB()

@@ -154,4 +154,30 @@ proposalRouter.post('/proposal/:proposalId/reject', authorize("client"), async(r
     }
 });
 
+proposalRouter.post('/proposal/:proposalId/update', authorize("freelancer"), async(req : Request, res : Response)=>{
+    try{
+        const {price, deliveryDays, coverLetter} = req.body;
+        const {proposalId} = req.params
+
+        const proposal = await Proposal.findByIdAndUpdate(proposalId, {
+           price : price,
+           deliveryDays : deliveryDays,
+           coverLetter : coverLetter
+        });
+        if(!proposal){
+            throw new Error("no proposal found");
+        }
+        await proposal.save();
+        res.json({
+            message : "Proposal updated!!",
+            data : proposal
+        });
+    }
+    catch(err){
+        res.json({
+           message : "Error: "+err
+        });
+    }
+});
+
 export default proposalRouter;
