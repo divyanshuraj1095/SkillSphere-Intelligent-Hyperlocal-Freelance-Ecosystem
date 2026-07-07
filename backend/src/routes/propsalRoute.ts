@@ -84,7 +84,6 @@ proposalRouter.post('/proposal/:proposalId/accept', authorize("client"), async(r
         const loggedUser = req.user;
         const {proposalId} = req.params
 
-        const status = "accepted";
         const proposal = await Proposal.findById({
          _id : proposalId
         });
@@ -100,11 +99,20 @@ proposalRouter.post('/proposal/:proposalId/accept', authorize("client"), async(r
             res.status(403).send("User Invalid");
         }
 
-        proposal.status = status;
+        proposal.status = "accepted";
         await proposal.save();
 
+        await Project.findByIdAndUpdate(proposal.projectId, {status : "in-progress"});
+
+        await Proposal.updateMany({
+            projectId : proposal.projectId,
+            _id : {$ne : proposal._id}
+        },{
+            status : "rejected"
+        })
+
         res.json({
-            message : "proposal accepted successfully!!";
+            message : "Status updated"
         })
     }
     catch(err){
@@ -116,11 +124,34 @@ proposalRouter.post('/proposal/:proposalId/accept', authorize("client"), async(r
 
 proposalRouter.post('/proposal/:proposalId/reject', authorize("client"), async(req : Request, res: Response)=>{
     try{
+       const {proposalId} = req.params;
 
+       const status = "rejected";
+       const proposal = await Proposal.findById({
+        _id : proposalId
+       });
+
+       if(!proposal){
+        throw new Error("No proposal found");
+       }
+
+       const project = await Project.findById(proposal.projectId);
+       if(!project){
+        throw new Error("Project not found");
+       }
+
+       proposal.status = status;
+       await proposal.save();
+
+       res.json({
+        message : "Rejected!!"
+       })
     }
     catch(err){
-        
+        res.json({
+            message : "Error: "+err
+        })
     }
-})
+});
 
 export default proposalRouter;
