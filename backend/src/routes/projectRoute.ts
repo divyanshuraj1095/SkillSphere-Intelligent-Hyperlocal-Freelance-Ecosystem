@@ -77,4 +77,35 @@ projectRouter.get("/get/:id", async(req : Request, res : Response)=>{
     }
 });
 
+projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
+    try{
+       const {id} = req.params
+       const {title, description, budget, duration} = req.body;
+
+       const project = await Project.findById(id);
+       if(!project){
+        throw new Error("No project found !!");
+       }
+       if(project.client.toString() !== req.user._id.toString()){
+          return res.status(403).json({
+            message : "Unauthorized"
+          })
+       }
+       const update = await Project.findByIdAndUpdate(id,{
+         title,
+         description,
+         budget,
+         duration,
+       },{new : true});
+       res.json({
+        message : "Updated Successfully!!"
+       })
+    }
+    catch(err){
+       res.json({
+        message : "Error: "+err
+       });
+    }
+});
+
 export default projectRouter;
