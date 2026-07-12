@@ -128,4 +128,48 @@ projectRouter.delete("/projects/:id", async(req: Request, res: Response)=>{
     }
 });
 
+projectRouter.get("/project", async(req : Request, res : Response)=>{
+ try{
+    const {title, budget, duration, status, minDuration, maxDuration} = req.query;
+    const filter:any = {};
+    if(title){
+        filter.title = {
+            $regex : title,
+            $options: "i"
+        }
+    }
+    if(budget){
+        filter.budget = {
+            $lte : Number(budget)
+        }
+    }
+    if(status){
+        filter.status = status
+    }
+
+    if (minDuration || maxDuration) {
+       filter.duration = {};
+
+       if (minDuration) {
+        filter.duration.$gte = Number(minDuration);
+       }
+
+       if (maxDuration) {
+        filter.duration.$lte = Number(maxDuration);
+       }
+    }
+    const projects = await Project.find(filter);
+
+    res.json({
+        message : "Projects Found",
+        data : projects
+    })
+ }
+ catch(err){
+    res.json({
+        message : "Error: "+err
+    })
+ }
+});
+
 export default projectRouter;

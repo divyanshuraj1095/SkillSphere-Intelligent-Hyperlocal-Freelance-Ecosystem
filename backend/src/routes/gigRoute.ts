@@ -127,5 +127,46 @@ gigRouter.delete("/gig/:id", async(req : Request, res:Response)=>{
     }
 });
 
-export default gigRouter
+gigRouter.get("/gigs", async(req : Request, res : Response)=>{
+ try{
+    const {title, price, minDuration, maxDuration} = req.query;
+    const filter:any = {};
+    if(title){
+        filter.title = {
+            $regex : title,
+            $options: "i"
+        }
+    }
+    if(price){
+        filter.price = {
+            $lte : Number(price)
+        }
+    }
+
+    if (minDuration || maxDuration) {
+       filter.duration = {};
+
+       if (minDuration) {
+        filter.duration.$gte = Number(minDuration);
+       }
+
+       if (maxDuration) {
+        filter.duration.$lte = Number(maxDuration);
+       }
+    }
+    const gigs = await Gig.find(filter);
+
+    res.json({
+        message : "Gigs Found",
+        data : gigs
+    })
+ }
+ catch(err){
+    res.json({
+        message : "Error: "+err
+    });
+ }
+});
+
+export default gigRouter;
 
