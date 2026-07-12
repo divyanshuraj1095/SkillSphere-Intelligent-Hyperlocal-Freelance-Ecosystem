@@ -1,6 +1,7 @@
 import express,{Request, Response} from "express";
 const projectRouter = express.Router();
 import Project from "../models/Project";
+import authorize from "../middlewares/roleAuthorize.middlewares";
 
 projectRouter.post("/create", async(req : Request, res : Response)=>{
     try{
@@ -77,7 +78,7 @@ projectRouter.get("/get/:id", async(req : Request, res : Response)=>{
     }
 });
 
-projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
+projectRouter.put("/projects/:id", authorize("client"), async(req: Request, res: Response)=>{
     try{
        const {id} = req.params
        const {title, description, budget, duration} = req.body;
@@ -98,13 +99,33 @@ projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
          duration,
        },{new : true});
        res.json({
-        message : "Updated Successfully!!"
+        message : "Updated Successfully!!",
+        data : update
        })
     }
     catch(err){
        res.json({
         message : "Error: "+err
        });
+    }
+});
+
+projectRouter.delete("/projects/:id", authorize("client"), async(req: Request, res: Response)=>{
+    try{
+       const {id} = req.params;
+       const project = await Project.findByIdAndDelete(id);
+       if(!project){
+          throw new Error("No project found to delete");
+       }
+
+       res.json({
+        message : "Deleted Successfully!!"
+       });
+    }
+    catch(err){
+        res.json({
+            message : "Error: "+err
+        });
     }
 });
 
