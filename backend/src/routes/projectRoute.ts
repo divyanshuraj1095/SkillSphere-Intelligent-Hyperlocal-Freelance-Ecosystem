@@ -1,7 +1,6 @@
 import express,{Request, Response} from "express";
 const projectRouter = express.Router();
 import Project from "../models/Project";
-import authorize from "../middlewares/roleAuthorize.middlewares";
 
 projectRouter.post("/create", async(req : Request, res : Response)=>{
     try{
@@ -78,7 +77,7 @@ projectRouter.get("/get/:id", async(req : Request, res : Response)=>{
     }
 });
 
-projectRouter.put("/projects/:id", authorize("client"), async(req: Request, res: Response)=>{
+projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
     try{
        const {id} = req.params
        const {title, description, budget, duration} = req.body;
@@ -110,7 +109,7 @@ projectRouter.put("/projects/:id", authorize("client"), async(req: Request, res:
     }
 });
 
-projectRouter.delete("/projects/:id", authorize("client"), async(req: Request, res: Response)=>{
+projectRouter.delete("/projects/:id", async(req: Request, res: Response)=>{
     try{
        const {id} = req.params;
        const project = await Project.findByIdAndDelete(id);
