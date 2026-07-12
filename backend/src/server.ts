@@ -15,7 +15,7 @@ app.use('/', async (req : any, res : any)=>{
 })
 
 app.use('/', authUser, authRouter);
-app.use('/', authUser, authorize("client"), projectRouter);
+app.use('/', authUser , projectRouter);
 app.use('/', authUser, proposalRouter);
 
 
