@@ -1,6 +1,6 @@
 import express from 'express';
-import http from "http";
-import {Server} from "socket.io";
+import { initializeSocket } from './socket';
+import http from "http"
 import connectDB from './config/db';
 import cors from "cors";
 import cookieParser from 'cookie-parser';
@@ -34,22 +34,9 @@ app.use('/', authUser, proposalRouter);
 app.use('/', authUser, authorize("freelancer"), gigRouter)
 app.use('/', authUser, profileRouter)
 
+
 const server = http.createServer(app);
-
-const io = new Server(server, {
-    cors : {
-        origin: "http://localhost:5173",
-        credentials: true
-    }
-});
-
-io.on("connection", (socket)=>{
-    console.log("User Connected: ", socket.id);
-
-    socket.on("disconnected", ()=>{
-        console.log("User Disconnected: ", socket.id);
-    });
-});
+initializeSocket(server);
 
 connectDB()
 .then(()=>{
