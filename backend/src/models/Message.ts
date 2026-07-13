@@ -1,15 +1,20 @@
 import mongoose, { Schema } from "mongoose";
-import Project from "./Project";
-import User from "./User";
 
 const messageSchema = new mongoose.Schema({
   projectId : {
     type : Schema.Types.ObjectId,
-    ref : Project
+    ref : "Project",
+    required: true
   },  
   sender :{
     type : Schema.Types.ObjectId,
-    ref : User
+    ref : "User",
+    required: true
+  },
+  receiver: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
   },
   message : {
     type : String,

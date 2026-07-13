@@ -5,13 +5,16 @@ import connectDB from './config/db';
 import cors from "cors";
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv'
-import authRouter from "./routes/authRoute";
+
 import authUser from "./middlewares/auth.middlewares";
 import authorize from "./middlewares/roleAuthorize.middlewares"
+
+import authRouter from "./routes/authRoute";
 import projectRouter from "./routes/projectRoute";
 import proposalRouter from './routes/propsalRoute';
 import gigRouter from "./routes/gigRoute"
 import profileRouter from './routes/profileRoute';
+import messageRouter from './routes/messageRoute';
 
 const app = express();
 app.use(express.json())
@@ -31,8 +34,9 @@ app.get('/', async (req : any, res : any)=>{
 app.use('/', authUser, authRouter);
 app.use('/', authUser , authorize("client"), projectRouter);
 app.use('/', authUser, proposalRouter);
-app.use('/', authUser, authorize("freelancer"), gigRouter)
-app.use('/', authUser, profileRouter)
+app.use('/', authUser, authorize("freelancer"), gigRouter);
+app.use('/', authUser, profileRouter);
+app.use('/', authUser, messageRouter);
 
 
 const server = http.createServer(app);
