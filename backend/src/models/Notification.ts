@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose"
 
 export interface INotification extends Document {
-    user: Schema.Types.ObjectId,
+    user: mongoose.Types.ObjectId,
     message: String,
     type: "proposal"| "payment"| "chat"| "project",
     isRead: Boolean

@@ -3,6 +3,7 @@ const proposalRouter = express.Router();
 import Proposal from '../models/Proposal';
 import authorize from '../middlewares/roleAuthorize.middlewares';
 import Project from '../models/Project';
+import Notification from '../models/Notification';
 
 proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request, res:Response)=>{
     try{
@@ -28,6 +29,18 @@ proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request,
             deliveryDays,
             coverLetter,
             status
+        });
+
+        const project = await Project.findById(projectId);
+
+        if(!project){
+            throw new Error("Project doesnt exist")
+        }
+
+        const notification = await Notification.create({
+         user: project.client,
+         message: `${req.user.name} has submitted a proposal for your project`,
+         type: "proposal"
         });
 
         res.json({

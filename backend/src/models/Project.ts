@@ -2,10 +2,10 @@ import mongoose,{Schema, Document} from "mongoose";
 import User from "./User"
 
 export interface IProject extends Document {
-    title : String,
-    description : String,
-    budget : Number,
-    duration : Number,
+    title : string,
+    description : string,
+    budget : number,
+    duration : number,
     client : mongoose.Types.ObjectId,
     status : "open" | "in-progress" | "completed" | "cancelled";
 }
@@ -29,7 +29,8 @@ const projectSchema = new Schema<IProject>({
     },
     client : {
         type : Schema.Types.ObjectId,
-        ref : User
+        ref : "User",
+        required: true
     },
     status : {
         type : String,
