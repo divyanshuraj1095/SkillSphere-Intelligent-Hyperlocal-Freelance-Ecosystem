@@ -15,6 +15,7 @@ import proposalRouter from './routes/propsalRoute';
 import gigRouter from "./routes/gigRoute"
 import profileRouter from './routes/profileRoute';
 import messageRouter from './routes/messageRoute';
+import notificationRouter from './routes/notificationRoute';
 
 const app = express();
 app.use(express.json())
@@ -37,6 +38,7 @@ app.use('/', authUser, proposalRouter);
 app.use('/', authUser, authorize("freelancer"), gigRouter);
 app.use('/', authUser, profileRouter);
 app.use('/', authUser, messageRouter);
+app.use('/', authUser, notificationRouter)
 
 
 const server = http.createServer(app);

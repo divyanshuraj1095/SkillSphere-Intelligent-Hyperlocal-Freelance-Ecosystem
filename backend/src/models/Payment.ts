@@ -8,8 +8,8 @@ export interface IPayment extends Document {
     orderId: string;
     paymentId?: string;
     status: "pending" | "successful" | "failed";
+    signature: string
 }
-
 
 const paymentSchema = new mongoose.Schema<IPayment>({
     project: {
@@ -41,6 +41,9 @@ const paymentSchema = new mongoose.Schema<IPayment>({
         type: String,
         enum: ["pending", "successful", "failed"],
         default: "pending"
+    },
+    signature: {
+        type: String
     }
 },{timestamps: true});
 
