@@ -45,11 +45,17 @@ notificationRouter.delete("/notification/:id", async(req: Request, res: Response
     try{
         const {id} = req.params;
 
-        const notification = await Notification.findByIdAndDelete(id);
+        const notification = await Notification.findById(id);
 
         if(!notification){
            throw new Error("No notification found to delete");
         }
+
+        if(notification.user.toString() !== req.user._id.toString()){
+            throw new Error("Unauthorized")
+        }
+
+        await notification.deleteOne()
 
         res.status(200).json({
             message: "Deleted SuccessFully"
@@ -66,9 +72,15 @@ notificationRouter.patch("/notification/:id", async(req: Request, res: Response)
     try{
         const {id} = req.params;
         
-        const notification = await Notification.findByIdAndUpdate(id,{
-            isRead: true
-        },{new: true});
+        const notification = await Notification.findByIdAndUpdate(
+            {
+             _id: id,
+             user: req.user._id
+            },
+            {
+              isRead: true
+            },
+            {new: true});
 
         if(!notification){
             throw new Error("No notification found to update");
