@@ -124,6 +124,12 @@ proposalRouter.patch('/proposal/:proposalId/accept', authorize("client"), async(
             status : "rejected"
         })
 
+        const notification = await Notification.create({
+            user: proposal.freelancerId,
+            message:"Your proposal has been accepted",
+            type: "proposal"
+        });
+
         res.json({
             message : "Status updated"
         })
@@ -155,6 +161,12 @@ proposalRouter.patch('/proposal/:proposalId/reject', authorize("client"), async(
 
        proposal.status = status;
        await proposal.save();
+
+       const notification = await Notification.create({
+            user: proposal.freelancerId,
+            message:"Your proposal has been rejected",
+            type: "proposal"
+        });
 
        res.json({
         message : "Rejected!!"
