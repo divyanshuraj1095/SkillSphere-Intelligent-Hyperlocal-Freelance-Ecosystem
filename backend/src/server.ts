@@ -16,6 +16,7 @@ import gigRouter from "./routes/gigRoute"
 import profileRouter from './routes/profileRoute';
 import messageRouter from './routes/messageRoute';
 import notificationRouter from './routes/notificationRoute';
+import aiRouter from "./routes/aiRoute";
 
 const app = express();
 app.use(express.json())
@@ -38,7 +39,8 @@ app.use('/', authUser, proposalRouter);
 app.use('/', authUser, authorize("freelancer"), gigRouter);
 app.use('/', authUser, profileRouter);
 app.use('/', authUser, messageRouter);
-app.use('/', authUser, notificationRouter)
+app.use('/', authUser, notificationRouter);
+app.use("/", authUser, authorize("client", "admint"), aiRouter);
 
 
 const server = http.createServer(app);

@@ -5,7 +5,7 @@ import authorize from "../middlewares/roleAuthorize.middlewares";
 
 gigRouter.post("/gig/create", authorize("freelancer"), async(req : Request, res: Response)=>{
     try{
-       const {title, price, duration, images, rating}= req.body;
+       const {title, price, duration, images, rating, description}= req.body;
        if(!title || !price || !duration || !images || !rating){
           throw new Error("All fields are required!!");
        }
@@ -14,7 +14,8 @@ gigRouter.post("/gig/create", authorize("freelancer"), async(req : Request, res:
         price,
         duration,
         images, 
-        rating
+        rating,
+        description
        });
 
        await gig.save();
@@ -75,13 +76,14 @@ gigRouter.get("/gig/getall", async(req : Request, res:Response)=>{
 gigRouter.patch("/gig/:id", async(req : Request, res:Response)=>{
     try{
        const {id} = req.params;
-       const {title, price, duration, images}= req.body;
+       const {title, price, duration, images, description}= req.body;
 
        const gig = await Gig.findByIdAndUpdate(id,{
         title,
         price,
         duration,
-        images
+        images,
+        description
        },{new : true});
 
        if(!gig){

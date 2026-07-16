@@ -18,6 +18,8 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
   },
   "dependencies": {
+    "@huggingface/inference": "^4.13.23",
+    "axios": "^1.18.1",
     "bcrypt": "^6.0.0",
     "cookie": "^2.0.0",
     "cookie-parser": "^1.4.7",

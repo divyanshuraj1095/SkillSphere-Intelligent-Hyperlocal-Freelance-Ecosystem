@@ -3,11 +3,12 @@ import User from "./User";
 
 export interface IGig extends Document{
     freelancerId : mongoose.Types.ObjectId,
-    title : String,
-    price : Number,
-    duration : Number,
-    images : String,
-    rating : Number
+    title : string,
+    price : number,
+    duration : number,
+    images : string,
+    rating : number,
+    description: string
 }
 const gigSchema = new Schema<IGig>({
     freelancerId : {
@@ -32,6 +33,10 @@ const gigSchema = new Schema<IGig>({
     },
     rating : {
         type : Number
+    },
+    description:{
+        type: String,
+        required: true
     }
 
 },{timestamps: true});
