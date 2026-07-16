@@ -3,6 +3,7 @@ const paymentRouter = express.Router();
 import Payment from "../models/Payment";
 import Project from "../models/Project";
 import Proposal from "../models/Proposal";
+import Notification from "../models/Notification";
 import razorpay from "../config/razorpay";
 import crypto from "crypto"
 
@@ -56,11 +57,11 @@ paymentRouter.post("/payment", async(req: Request, res: Response)=>{
 
 paymentRouter.post("/payment/verify", async(req: Request, res: Response)=>{
     try{
-        const {razorpay_orderId, razorpay_paymentId, razorpay_signature} = req.body;
+        const {razorpay_order_id, razorpay_payment_id, razorpay_signature} = req.body;
         const generateSignature = crypto
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
         .update(
-            razorpay_orderId+"|"+ razorpay_paymentId
+            razorpay_order_id+"|"+ razorpay_payment_id
         )
         .digest("hex");
 
@@ -69,21 +70,40 @@ paymentRouter.post("/payment/verify", async(req: Request, res: Response)=>{
         }
 
         const payment = await Payment.findOne({
-            orderId: razorpay_orderId
+            orderId: razorpay_order_id
         })
 
-        if(!payment){
-            throw new Error("Nothing to do payment for");
+        if (!payment) {
+            return res.status(404).json({
+            message: "Payment not found"
+           });
         }
 
-        payment.paymentId = razorpay_paymentId;
+        if (payment.status === "successful") {
+            return res.status(400).json({
+            message: "Payment already verified"
+           });
+        }
+
+        payment.paymentId = razorpay_payment_id;
         payment.signature = razorpay_signature;
         payment.status = "successful";
 
         await payment.save();
 
+        await Project.findByIdAndUpdate(payment.project,{
+            status: "in-progress"
+        })
+        
+        await Notification.create({
+            user: payment.freelancer,
+            message: "Payment successful, Your project has started",
+            type:"payment"
+        })
+
         res.status(200).json({
-            message: "Payment Successfully"
+            message: "Payment Successfully",
+            payment
         });
 
     }
