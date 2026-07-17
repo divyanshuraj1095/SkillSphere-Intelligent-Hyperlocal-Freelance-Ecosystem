@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 const authRouter = express.Router();
-const User = require('./models/user.ts')
+import User from "../models/User";
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -43,7 +43,7 @@ authRouter.post('/login', async(req : Request, res : Response)=>{
         if(!user){
            throw new Error("User not found");
         }
-        const valid = await bcrypt.compare(password, user.hashedPass);
+        const valid = await bcrypt.compare(password, user.password);
         if(!valid){
            throw new Error('Invalid credentials');
         }

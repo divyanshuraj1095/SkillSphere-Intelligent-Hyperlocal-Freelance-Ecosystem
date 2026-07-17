@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken"
-import express, { Request, Response, NextFunction } from "express";
-const User = require('./models/user.ts')
+import express, {Response, NextFunction } from "express";
+import User from "../models/User";
+import { authRequest } from "../types/authRequest";
 
 export interface JwtPayload {
     _id : String,
@@ -8,7 +9,7 @@ export interface JwtPayload {
 }
 
 
-const authUser = async(req : Request, res : Response, next: NextFunction)=>{
+const authUser = async(req : authRequest, res : Response, next: NextFunction)=>{
     try{
         const {token} = req.cookies;
 

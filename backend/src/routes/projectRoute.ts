@@ -1,11 +1,12 @@
 import express,{Request, Response} from "express";
 const projectRouter = express.Router();
 import Project from "../models/Project";
+import { authRequest } from "../types/authRequest";
 
-projectRouter.post("/create", async(req : Request, res : Response)=>{
+projectRouter.post("/create", async(req : authRequest, res : Response)=>{
     try{
         const {title, description, budget, duration, status} = req.body;
-        const client = req.user._id;
+        const client = req.user!._id;
 
         if(!title || !description || !budget || !duration || !status){
             throw new Error("All fields are required!!");
@@ -35,7 +36,7 @@ projectRouter.post("/create", async(req : Request, res : Response)=>{
     }
 });
 
-projectRouter.get("/getAll", async(req : Request, res : Response)=>{
+projectRouter.get("/getAll", async(req : authRequest, res : Response)=>{
     try{
         const project = await Project.find();
 
@@ -55,7 +56,7 @@ projectRouter.get("/getAll", async(req : Request, res : Response)=>{
     }
 });
 
-projectRouter.get("/get/:id", async(req : Request, res : Response)=>{
+projectRouter.get("/get/:id", async(req : authRequest, res : Response)=>{
     try{
 
         const {id} = req.params;
@@ -77,7 +78,7 @@ projectRouter.get("/get/:id", async(req : Request, res : Response)=>{
     }
 });
 
-projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
+projectRouter.put("/projects/:id", async(req: authRequest, res: Response)=>{
     try{
        const {id} = req.params
        const {title, description, budget, duration} = req.body;
@@ -86,7 +87,7 @@ projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
        if(!project){
         throw new Error("No project found !!");
        }
-       if(project.client.toString() !== req.user._id.toString()){
+       if(project.client.toString() !== req.user!._id.toString()){
           return res.status(403).json({
             message : "Unauthorized"
           })
@@ -109,7 +110,7 @@ projectRouter.put("/projects/:id", async(req: Request, res: Response)=>{
     }
 });
 
-projectRouter.delete("/projects/:id", async(req: Request, res: Response)=>{
+projectRouter.delete("/projects/:id", async(req: authRequest, res: Response)=>{
     try{
        const {id} = req.params;
        const project = await Project.findByIdAndDelete(id);
@@ -128,7 +129,7 @@ projectRouter.delete("/projects/:id", async(req: Request, res: Response)=>{
     }
 });
 
-projectRouter.get("/project", async(req : Request, res : Response)=>{
+projectRouter.get("/project", async(req : authRequest, res : Response)=>{
  try{
     const {title, budget, duration, status, minDuration, maxDuration} = req.query;
     const filter:any = {};

@@ -1,9 +1,10 @@
 import User from "../models/User"
-import express,{Request, Response} from "express"
+import express,{ Response} from "express"
+import { authRequest } from "../types/authRequest";
 const profileRouter = express.Router();
 import authUser from "../middlewares/auth.middlewares";
 
-profileRouter.get("/profile",  async(req : Request, res :Response)=>{
+profileRouter.get("/profile",  async(req : authRequest, res :Response)=>{
     try{
         const {email} = req.body;
 
@@ -25,10 +26,10 @@ profileRouter.get("/profile",  async(req : Request, res :Response)=>{
     }
 });
 
-profileRouter.patch("/profile", async(req : Request, res :Response)=>{
+profileRouter.patch("/profile", async(req : authRequest, res :Response)=>{
     try{
         const {name, email, password} = req.body;
-        const id = req.user._id
+        const id = req.user!._id
 
         const user = await User.findByIdAndUpdate(id,{
             name,

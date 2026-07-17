@@ -1,8 +1,9 @@
 import express, {Request, Response} from "express"
 const notificationRouter = express.Router();
 import Notification from "../models/Notification";
+import { authRequest } from "../types/authRequest";
 
-notificationRouter.get("/notification", async(req: Request, res: Response)=>{
+notificationRouter.get("/notification", async(req: authRequest, res: Response)=>{
     try{
         const notification = await Notification.find();
         if(!notification){
@@ -21,7 +22,7 @@ notificationRouter.get("/notification", async(req: Request, res: Response)=>{
     }
 });
 
-notificationRouter.get("/notification/:id", async(req: Request, res: Response)=>{
+notificationRouter.get("/notification/:id", async(req: authRequest, res: Response)=>{
     try{
         const {id} = req.params;
         const notification = await Notification.findById(id);
@@ -41,7 +42,7 @@ notificationRouter.get("/notification/:id", async(req: Request, res: Response)=>
     }
 });
 
-notificationRouter.delete("/notification/:id", async(req: Request, res: Response)=>{
+notificationRouter.delete("/notification/:id", async(req: authRequest, res: Response)=>{
     try{
         const {id} = req.params;
 
@@ -51,7 +52,7 @@ notificationRouter.delete("/notification/:id", async(req: Request, res: Response
            throw new Error("No notification found to delete");
         }
 
-        if(notification.user.toString() !== req.user._id.toString()){
+        if(notification.user.toString() !== req.user!._id.toString()){
             throw new Error("Unauthorized")
         }
 
@@ -68,14 +69,14 @@ notificationRouter.delete("/notification/:id", async(req: Request, res: Response
     }
 });
 
-notificationRouter.patch("/notification/:id", async(req: Request, res: Response)=>{
+notificationRouter.patch("/notification/:id", async(req: authRequest, res: Response)=>{
     try{
         const {id} = req.params;
         
         const notification = await Notification.findByIdAndUpdate(
             {
              _id: id,
-             user: req.user._id
+             user: req.user!._id
             },
             {
               isRead: true

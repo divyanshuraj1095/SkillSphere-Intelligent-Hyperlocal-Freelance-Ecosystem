@@ -1,14 +1,15 @@
-import express, {Request, Response} from 'express';
+import express, {Response} from 'express';
 const proposalRouter = express.Router();
+import { authRequest } from "../types/authRequest";
 import Proposal from '../models/Proposal';
 import authorize from '../middlewares/roleAuthorize.middlewares';
 import Project from '../models/Project';
 import Notification from '../models/Notification';
 
-proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request, res:Response)=>{
+proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:authRequest, res:Response)=>{
     try{
         const {projectId, price, deliveryDays, coverLetter, status} = req.body;
-        const freelancerId = req.user._id
+        const freelancerId = req.user!._id
         if(!projectId || !price || !deliveryDays || !coverLetter){
             throw new Error("Field missing!!");
         }
@@ -39,7 +40,7 @@ proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request,
 
         const notification = await Notification.create({
          user: project.client,
-         message: `${req.user.name} has submitted a proposal for your project`,
+         message: `${req.user!.name} has submitted a proposal for your project`,
          type: "proposal"
         });
 
@@ -55,7 +56,7 @@ proposalRouter.post('/makeProposal', authorize("freelancer"), async(req:Request,
     }
 });
 
-proposalRouter.get('/getProposals', authorize("client"), async(req:Request, res:Response)=>{
+proposalRouter.get('/getProposals', authorize("client"), async(req:authRequest, res:Response)=>{
     try{
         const proposal = await Proposal.find();
         if(!proposal){
@@ -73,7 +74,7 @@ proposalRouter.get('/getProposals', authorize("client"), async(req:Request, res:
     }
 });
 
-proposalRouter.get('/getProposals/:id', authorize("client"), async(req:Request, res: Response)=>{
+proposalRouter.get('/getProposals/:id', authorize("client"), async(req:authRequest, res: Response)=>{
     try{
         const {id} = req.params;
         const proposal = await Proposal.findById({id : id});
@@ -92,7 +93,7 @@ proposalRouter.get('/getProposals/:id', authorize("client"), async(req:Request, 
     }
 });
 
-proposalRouter.patch('/proposal/:proposalId/accept', authorize("client"), async(req:Request, res:Response)=>{
+proposalRouter.patch('/proposal/:proposalId/accept', authorize("client"), async(req:authRequest, res:Response)=>{
     try{
         const loggedUser = req.user;
         const {proposalId} = req.params
@@ -108,7 +109,7 @@ proposalRouter.patch('/proposal/:proposalId/accept', authorize("client"), async(
         if(!project){
             throw new Error("project not found!!");
         }
-        if(project.client.toString() != req.user._id.toString()){
+        if(project.client.toString() != req.user!._id.toString()){
             res.status(403).send("User Invalid");
         }
 
@@ -141,7 +142,7 @@ proposalRouter.patch('/proposal/:proposalId/accept', authorize("client"), async(
     }
 });
 
-proposalRouter.patch('/proposal/:proposalId/reject', authorize("client"), async(req : Request, res: Response)=>{
+proposalRouter.patch('/proposal/:proposalId/reject', authorize("client"), async(req : authRequest, res: Response)=>{
     try{
        const {proposalId} = req.params;
 
@@ -179,7 +180,7 @@ proposalRouter.patch('/proposal/:proposalId/reject', authorize("client"), async(
     }
 });
 
-proposalRouter.patch('/proposal/:proposalId/update', authorize("freelancer"), async(req : Request, res : Response)=>{
+proposalRouter.patch('/proposal/:proposalId/update', authorize("freelancer"), async(req : authRequest, res : Response)=>{
     try{
         const {price, deliveryDays, coverLetter} = req.body;
         const {proposalId} = req.params
