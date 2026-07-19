@@ -2,13 +2,14 @@ import express,{Request, Response} from "express";
 const projectRouter = express.Router();
 import Project from "../models/Project";
 import { authRequest } from "../types/authRequest";
+import authorize from "../middlewares/roleAuthorize.middlewares";
 
-projectRouter.post("/create", async(req : authRequest, res : Response)=>{
+projectRouter.post("/create", authorize("client"), async(req : authRequest, res : Response)=>{
     try{
         const {title, description, budget, duration, status} = req.body;
         const client = req.user!._id;
 
-        if(!title || !description || !budget || !duration || !status){
+        if(!title || !description || !budget || !duration){
             throw new Error("All fields are required!!");
         }
 
@@ -60,7 +61,7 @@ projectRouter.get("/get/:id", async(req : authRequest, res : Response)=>{
     try{
 
         const {id} = req.params;
-        const project = await Project.findOne({id});
+        const project = await Project.findById(id);
 
         if(!project){
             throw new Error("Project not found !!");

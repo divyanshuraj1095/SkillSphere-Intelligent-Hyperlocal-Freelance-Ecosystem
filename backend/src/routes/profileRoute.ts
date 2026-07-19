@@ -2,22 +2,19 @@ import User from "../models/User"
 import express,{ Response} from "express"
 import { authRequest } from "../types/authRequest";
 const profileRouter = express.Router();
-import authUser from "../middlewares/auth.middlewares";
 
 profileRouter.get("/profile",  async(req : authRequest, res :Response)=>{
     try{
-        const {email} = req.body;
+        const user = await User.findById(req.user!._id);
 
-        const user = await User.findOne({email})
-
-        if(!user){
-           throw new Error("User not find")
+        if (!user) {
+            throw new Error("User not found");
         }
 
-        res.json({
-            message : "User Data",
-            data : user
-        })
+        return res.status(200).json({
+            message: "User Data",
+            data: user
+        });
     }
     catch(err){
           res.status(400).json({

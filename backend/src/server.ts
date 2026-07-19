@@ -17,6 +17,7 @@ import profileRouter from './routes/profileRoute';
 import messageRouter from './routes/messageRoute';
 import notificationRouter from './routes/notificationRoute';
 import aiRouter from "./routes/aiRoute";
+import paymentRouter from './routes/paymentRoute';
 
 const app = express();
 app.use(express.json())
@@ -33,15 +34,14 @@ app.get('/', async (req : any, res : any)=>{
     res.send("Hello World")
 })
 
-app.use('/', authUser, authRouter);
-app.use('/', authUser , authorize("client"), projectRouter);
+app.use('/', authRouter);
+app.use('/', authUser , projectRouter);
 app.use('/', authUser, proposalRouter);
 app.use('/', authUser, authorize("freelancer"), gigRouter);
-app.use('/', authUser, profileRouter);
+app.use('/', authUser, authorize("client", "admin", "freelancer"), profileRouter);
 app.use('/', authUser, messageRouter);
 app.use('/', authUser, notificationRouter);
-app.use("/", authUser, authorize("client", "admint"), aiRouter);
-
+app.use("/", authUser, authorize("client", "admin"), aiRouter);
 
 const server = http.createServer(app);
 initializeSocket(server);

@@ -4,7 +4,7 @@ import User from "../models/User";
 import { authRequest } from "../types/authRequest";
 
 export interface JwtPayload {
-    _id : String,
+    _id : string,
     role : "client" | "admin" | "freelancer"
 }
 
@@ -17,10 +17,10 @@ const authUser = async(req : authRequest, res : Response, next: NextFunction)=>{
           throw new Error("INVALID!!");
         }
 
-        const verify = await jwt.verify(token, process.env.JWT_TOKEN as string) as JwtPayload;
+        const verify = jwt.verify(token, process.env.JWT_TOKEN as string) as JwtPayload;
 
-        const {_id} : any = verify;
-        const user = await User.findOne({_id});
+        const {_id} = verify;
+        const user = await User.findById(_id);
 
         if(!user){
            throw new Error("INVALID!!");
